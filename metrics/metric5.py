@@ -3,6 +3,7 @@ import os
 import sys
 import json
 
+from e2e_preprocess_task2345_synthetic import preprocess_gt_result
 
 def compute_iou(bb1, bb2):
     ax1 = bb1['x0']
@@ -64,16 +65,21 @@ def metric_5(pred_legend_pairs, gt_legend_pairs, gt_type, debug=False):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) < 3:
-        print("USAGE: python metric5.py pred_file|pred_dir gt_file|gt_dir [debug]")
+    if len(sys.argv) < 4:
+        print("USAGE: python metric5.py pred_file|pred_dir gt_file|gt_dir [debug] [True|False for e2e preprocessing]")
         exit()
     pred_infile = sys.argv[1]
     gt_infile = sys.argv[2]
 
     try:
-        debug = sys.argv[3]
+        debug = sys.argv[3].lower() == 'true'
     except:
         debug = False
+
+    try:
+        preprocess = sys.argv[4].lower() == 'true'
+    except:
+        preprocess = False
 
     if os.path.isfile(pred_infile) and os.path.isfile(gt_infile):
         pred_json = json.load(open(pred_infile))
@@ -93,6 +99,9 @@ if __name__ == "__main__":
 
             pred_json = json.load(open(pred_file))
             gt_json = json.load(open(gt_file))
+
+            if preprocess:
+                preprocess_gt_result(gt_json, pred_json)
 
             pred_outputs = pred_json['task5']['output']['legend_pairs']
             gt_outputs = gt_json['task5']['output']['legend_pairs']

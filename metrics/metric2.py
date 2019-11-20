@@ -49,7 +49,7 @@ def extract_bboxes(js):
         x2, y2 = x1 + w, y1 + h
         if 'id' in text_block:
             ids += [text_block['id']]
-        raw_text = text_block['text']
+        raw_text = text_block['text'] if 'text' in text_block else ''
         text = sanitize_text(raw_text)
         if '__' in text:
             continue

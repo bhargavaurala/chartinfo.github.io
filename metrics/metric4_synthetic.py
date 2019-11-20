@@ -4,6 +4,8 @@ import cv2
 import json
 import numpy as np
 
+from e2e_preprocess_task2345_synthetic import preprocess_gt_result
+
 LOW_THRESHOLD = 0.01
 HIGH_THRESHOLD = 0.02
 
@@ -47,7 +49,7 @@ def get_axis_score(gt, res, lt, ht):
         score += get_distance_score(distance, lt, ht)
     return score
 
-def eval_task4(gt_folder, result_folder, img_folder):
+def eval_task4(gt_folder, result_folder, img_folder, preprocess=False):
     total_recall = 0.
     total_precision = 0.
     gt_files = os.listdir(gt_folder)
@@ -57,9 +59,11 @@ def eval_task4(gt_folder, result_folder, img_folder):
             continue
         with open(os.path.join(gt_folder, gt_file), 'r') as f:
             gt = json.load(f)
-        gt_x, gt_y = extract_tick_point_pairs(gt)
         with open(os.path.join(result_folder, gt_id + '.json'), 'r') as f:
             res = json.load(f)
+        if preprocess:
+            preprocess_gt_result(gt, res)
+        gt_x, gt_y = extract_tick_point_pairs(gt)        
         res_x, res_y = extract_tick_point_pairs(res)
         im_file = '{}/{}.{}'.format(img_folder, gt_id, 'png')
         im_file = im_file if os.path.isfile(im_file) else '{}/{}.{}'.format(img_folder, gt_id, 'jpg')
@@ -91,10 +95,10 @@ def eval_task4(gt_folder, result_folder, img_folder):
 
 if __name__ == '__main__':
     try:
-        eval_task4(sys.argv[1], sys.argv[2], sys.argv[3])
+        eval_task4(sys.argv[1], sys.argv[2], sys.argv[3], sys.argv[4].lower() == 'true')
     except Exception as e:
         print(e)
-        print('Usage Guide: python eval_task4.py <ground_truth_folder> <result_folder> <img_folder>')
+        print('Usage Guide: python eval_task4.py <ground_truth_folder> <result_folder> <img_folder>, <True/False for e2e preprocessing>')
 
 
 
