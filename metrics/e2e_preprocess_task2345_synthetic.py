@@ -101,15 +101,3 @@ def preprocess_gt_result(gt, res):
 	for legend_pair in legend_pairs:
 		legend_pair['id'] = res_gt_id_map[legend_pair['id']] if legend_pair['id'] in res_gt_id_map else legend_pair['id']
 
-if __name__ == '__main__':
-	gt_file = '/home/buralako/git/Charts_Competition_Submissions/gt_syn_jsons/task2/2.json'	
-	res_file = '/home/buralako/git/Charts_Competition_Submissions/CUBS/task2-2345/2.json'
-	with open(gt_file, 'r') as f:
-		gt = json.load(f)
-	with open(res_file, 'r') as f:
-		res = json.load(f)
-	preprocess_gt_result(gt, res)
-	with open('/home/buralako/git/Charts_Competition_Submissions/gt_corr.json', 'w') as f:
-		f.write(json.dumps(gt, indent=4, sort_keys=True))
-	with open('/home/buralako/git/Charts_Competition_Submissions/res_corr.json', 'w') as f:
-		f.write(json.dumps(res, indent=4, sort_keys=True))
